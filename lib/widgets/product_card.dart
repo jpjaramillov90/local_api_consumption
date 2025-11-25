@@ -47,8 +47,8 @@ class ProductCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8),
-            if (producto.categoria != null)
-              Text('Categoría: ${producto.categoria}'),
+            if (producto.categoriaNombre != null)
+              Text('Categoría: ${producto.categoriaNombre}'),
             if (producto.marca != null) Text('Marca: ${producto.marca}'),
             if (producto.codigoBarra != null)
               Text('Código: ${producto.codigoBarra}'),

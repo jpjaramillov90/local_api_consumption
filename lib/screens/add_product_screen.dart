@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/producto.dart';
+import '../models/categoria.dart';
 import '../services/api_service.dart';
 
 class AddProductScreen extends StatefulWidget {
@@ -13,12 +14,34 @@ class _AddProductScreenState extends State<AddProductScreen> {
   final _formKey = GlobalKey<FormState>();
   final ApiService _apiService = ApiService();
   bool _isLoading = false;
+  List<Categoria> _categorias = [];
+  Categoria? _categoriaSeleccionada;
 
   final TextEditingController _codigoBarraController = TextEditingController();
   final TextEditingController _nombreController = TextEditingController();
-  final TextEditingController _categoriaController = TextEditingController();
   final TextEditingController _marcaController = TextEditingController();
   final TextEditingController _precioController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _cargarCategorias();
+  }
+
+  Future<void> _cargarCategorias() async {
+    try {
+      final categorias = await _apiService.getCategorias();
+      setState(() {
+        _categorias = categorias;
+      });
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al cargar categorías: $e')),
+        );
+      }
+    }
+  }
 
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
@@ -33,9 +56,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
               ? null
               : _codigoBarraController.text,
           nombre: _nombreController.text,
-          categoria: _categoriaController.text.isEmpty
-              ? null
-              : _categoriaController.text,
+          idCategoriaProductos: _categoriaSeleccionada?.idCategoria,
+          categoriaNombre: _categoriaSeleccionada?.nombreCategoria,
           marca: _marcaController.text.isEmpty ? null : _marcaController.text,
           precio: double.parse(_precioController.text),
         );
@@ -96,12 +118,24 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 },
               ),
               const SizedBox(height: 16),
-              TextFormField(
-                controller: _categoriaController,
+              DropdownButtonFormField<Categoria>(
+                value: _categoriaSeleccionada,
                 decoration: const InputDecoration(
                   labelText: 'Categoría',
                   border: OutlineInputBorder(),
                 ),
+                items: _categorias.map((Categoria categoria) {
+                  return DropdownMenuItem<Categoria>(
+                    value: categoria,
+                    child: Text(categoria.nombreCategoria),
+                  );
+                }).toList(),
+                onChanged: (Categoria? newValue) {
+                  setState(() {
+                    _categoriaSeleccionada = newValue;
+                  });
+                },
+                hint: const Text('Selecciona una categoría'),
               ),
               const SizedBox(height: 16),
               TextFormField(
@@ -153,7 +187,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
   void dispose() {
     _codigoBarraController.dispose();
     _nombreController.dispose();
-    _categoriaController.dispose();
     _marcaController.dispose();
     _precioController.dispose();
     super.dispose();

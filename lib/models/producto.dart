@@ -2,7 +2,8 @@ class Producto {
   final int idProducto;
   final String? codigoBarra;
   final String nombre;
-  final String? categoria;
+  final int? idCategoriaProductos;
+  final String? categoriaNombre;
   final String? marca;
   final double precio;
 
@@ -10,7 +11,8 @@ class Producto {
     required this.idProducto,
     this.codigoBarra,
     required this.nombre,
-    this.categoria,
+    this.idCategoriaProductos,
+    this.categoriaNombre,
     this.marca,
     required this.precio,
   });
@@ -20,7 +22,8 @@ class Producto {
       idProducto: json['IdProducto'] ?? 0,
       codigoBarra: json['CodigoBarra'],
       nombre: json['Nombre'] ?? '',
-      categoria: json['Categoria'],
+      idCategoriaProductos: json['idCategoriaProductos'],
+      categoriaNombre: json['categoriaNombre'],
       marca: json['Marca'],
       precio: double.tryParse(json['Precio']?.toString() ?? '0') ?? 0.0,
     );
@@ -30,7 +33,7 @@ class Producto {
     return {
       'CodigoBarra': codigoBarra,
       'Nombre': nombre,
-      'Categoria': categoria,
+      'idCategoriaProductos': idCategoriaProductos,
       'Marca': marca,
       'Precio': precio,
     };
@@ -40,7 +43,8 @@ class Producto {
     int? idProducto,
     String? codigoBarra,
     String? nombre,
-    String? categoria,
+    int? idCategoriaProductos,
+    String? categoriaNombre,
     String? marca,
     double? precio,
   }) {
@@ -48,7 +52,8 @@ class Producto {
       idProducto: idProducto ?? this.idProducto,
       codigoBarra: codigoBarra ?? this.codigoBarra,
       nombre: nombre ?? this.nombre,
-      categoria: categoria ?? this.categoria,
+      idCategoriaProductos: idCategoriaProductos ?? this.idCategoriaProductos,
+      categoriaNombre: categoriaNombre ?? this.categoriaNombre,
       marca: marca ?? this.marca,
       precio: precio ?? this.precio,
     );

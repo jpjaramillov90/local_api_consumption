@@ -1,18 +1,18 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/producto.dart';
+import '../models/categoria.dart';
 
 class ApiService {
   static const String baseUrl = 'http://localhost:3000/api';
-  // Cambia la IP por la de tu máquina local
-  // En Windows: ipconfig
-  // En Mac/Linux: ifconfig
 
   static final ApiService _instance = ApiService._internal();
   factory ApiService() => _instance;
   ApiService._internal();
 
   final http.Client client = http.Client();
+
+  // PRODUCTOS
 
   // GET - Obtener todos los productos
   Future<List<Producto>> getProducts() async {
@@ -95,6 +95,81 @@ class ApiService {
 
       if (response.statusCode != 200) {
         throw Exception('Error al eliminar producto: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error de conexión: $e');
+    }
+  }
+
+  // CATEGORÍAS
+
+  // GET - Obtener todas las categorías
+  Future<List<Categoria>> getCategorias() async {
+    try {
+      final response = await client.get(Uri.parse('$baseUrl/categorias'));
+
+      if (response.statusCode == 200) {
+        final List<dynamic> jsonResponse = json.decode(response.body);
+        return jsonResponse.map((json) => Categoria.fromJson(json)).toList();
+      } else {
+        throw Exception('Error al cargar categorías: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error de conexión: $e');
+    }
+  }
+
+  // POST - Crear nueva categoría
+  Future<Categoria> createCategoria(Categoria categoria) async {
+    try {
+      final response = await client.post(
+        Uri.parse('$baseUrl/categorias'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(categoria.toJson()),
+      );
+
+      if (response.statusCode == 201) {
+        final Map<String, dynamic> jsonResponse = json.decode(response.body);
+        return Categoria.fromJson(jsonResponse);
+      } else {
+        throw Exception('Error al crear categoría: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error de conexión: $e');
+    }
+  }
+
+  // PUT - Actualizar categoría
+  Future<Categoria> updateCategoria(Categoria categoria) async {
+    try {
+      final response = await client.put(
+        Uri.parse('$baseUrl/categorias/${categoria.idCategoria}'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(categoria.toJson()),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonResponse = json.decode(response.body);
+        return Categoria.fromJson(jsonResponse);
+      } else {
+        throw Exception(
+          'Error al actualizar categoría: ${response.statusCode}',
+        );
+      }
+    } catch (e) {
+      throw Exception('Error de conexión: $e');
+    }
+  }
+
+  // DELETE - Eliminar categoría
+  Future<void> deleteCategoria(int id) async {
+    try {
+      final response = await client.delete(
+        Uri.parse('$baseUrl/categorias/$id'),
+      );
+
+      if (response.statusCode != 200) {
+        throw Exception('Error al eliminar categoría: ${response.statusCode}');
       }
     } catch (e) {
       throw Exception('Error de conexión: $e');

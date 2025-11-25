@@ -39,6 +39,20 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
             ),
+            const SizedBox(height: 15),
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.pushNamed(context, '/categories');
+              },
+              icon: const Icon(Icons.category),
+              label: const Text('Gestión de Categorías'),
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 30,
+                  vertical: 15,
+                ),
+              ),
+            ),
           ],
         ),
       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'screens/home_screen.dart';
 import 'screens/product_list_screen.dart';
+import 'screens/category_list_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const HomeScreen(),
         '/products': (context) => const ProductListScreen(),
+        '/categories': (context) => const CategoryListScreen(),
       },
       debugShowCheckedModeBanner: false,
     );
